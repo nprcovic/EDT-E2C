@@ -1,0 +1,185 @@
+package model;
+import org.chocosolver.solver.Model;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.nary.cnf.LogOp;
+import org.chocosolver.solver.variables.IntVar;
+
+public class Solveur {
+	
+	public static void main(String[] args) {
+		Probleme instance = new Probleme();
+		Model model = new Model("EDT");
+		
+		int nbEnseignants = instance.nbEnseignants();
+		int nbCreneaux = instance.nbCreneaux();
+		int nbSalles = instance.nbSalles();
+		int nbActivites = instance.nbActivites();
+		
+		IntVar [] heures = model.intVarArray("heures", nbActivites, 0, nbCreneaux - 1);
+		IntVar [] enseignants = model.intVarArray("enseignants", nbActivites, 0, nbEnseignants - 1);
+		IntVar [] salles = model.intVarArray("salles", nbActivites, 0, nbSalles - 1);
+		
+		int i;
+		int j;
+		
+		//Deux Activit��s ne peuvent pas ��tre dans la m��me salle en m��me temps.
+		for(i = 0; i < nbActivites; i++) {
+			for(j = 0; j < nbActivites; j++) {
+				if(i != j && i != 8 && i != 9 && i != 18 && i != 19 && i != 28 && i != 29 && i != 38 && i != 39
+				&& j != 8 && j != 9 && j != 18 && j != 19 && j != 28 && j != 29 && j != 38 && j != 39) {
+					model.addClauses(LogOp.or(model.arithm(heures[i], "!=", heures[j]).reify(), (model.arithm(salles[i], "!=", salles[j]).reify())));
+				}
+			}
+		}	
+		
+		//Deux Activit��s de m��me groupe ne peuvent pas se passe au m��me temps.
+		for(i = 0; i < nbActivites; i++) {
+			for(j = 0; j < nbActivites; j++) {
+				if(i != j && i >= 0 && i <= 19 && j >= 0 && j <= 19) {
+					model.arithm(heures[i], "!=", heures[j]).post();
+				}
+			}
+		}		
+		for(i = 0; i < nbActivites; i++) {
+			for(j = 0; j < nbActivites; j++) {
+				if(i != j && i >= 20 && i <= 39 && j >= 20 && j <= 39) {
+					model.arithm(heures[i], "!=", heures[j]).post();
+				}
+			}
+		}
+		
+		//Les cours d'info sont dans la salle d'info
+		for(i = 0; i < nbActivites; i++) {
+			for(j = 0; j < nbSalles; j++) {
+				if(instance.getActivite(i).getMatiere().getNature().equals("info")) {
+					model.arithm(salles[i], "=", 1).post();
+				}
+			}
+		}
+		
+		//Deux Activit��s ne peuvent pas avoir un prof en m��me temps.
+		for(i = 0; i < nbActivites; i++) {
+			for(j = 0; j < nbActivites; j++) {
+				if(i != j) {
+					model.addClauses(LogOp.or(model.arithm(heures[i], "!=", heures[j]).reify(), model.arithm(enseignants[i], "!=", enseignants[j]).reify()));
+				}
+			}
+		}
+		
+		//Un prof ne peut pas enseigner les cours impropre
+		for(i = 0; i < nbActivites; i++) {
+			if (i == 13 || i == 14 || i == 16 || i == 17 
+			|| i == 33 || i == 34 || i == 36 || i == 37) {
+				model.arithm(enseignants[i], "=", 0).post();
+			}else if (i == 15 || i == 18 || i == 19  || i == 35 || i == 38 || i == 39) {
+				model.arithm(enseignants[i], "=", 1).post();
+			}else if (i == 10 || i == 11 || i == 12  || i == 30 || i == 31 || i == 32) {
+				model.arithm(enseignants[i], "=", 2).post();
+			}
+		}
+			
+		
+		//Monsieur Christine Caldentey n'enseigne pas le mercredi.
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 1),
+				   model.arithm(heures[i], "!=", 8)
+				);
+		}
+			
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 1),
+				   model.arithm(heures[i], "!=", 9)
+				);
+		}
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 1),
+				   model.arithm(heures[i], "!=", 10)
+				);
+		}
+			
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 1),
+				   model.arithm(heures[i], "!=", 11)
+				);
+		}
+			
+		//Monsieuer Slimane Sadelli n'enseign pas le jeudi.
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 2),
+				   model.arithm(heures[i], "!=", 12)
+				);
+		}
+			
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 2),
+				   model.arithm(heures[i], "!=", 13)
+				);
+		}
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 2),
+				   model.arithm(heures[i], "!=", 14)
+				);
+		}
+			
+		for(i = 0; i < nbActivites; i++) {
+			model.ifThen(
+				   model.arithm(enseignants[i], "=", 2),
+				   model.arithm(heures[i], "!=", 15)
+				);
+		}
+		
+		//Les ext��rieurs sont tous au mardi apres 13 19 26 39
+		for(i = 0; i < nbActivites; i++) {
+			if(i == 13 || i == 19 || i == 26 || i == 39) {
+				model.addClauses(LogOp.and(model.arithm(heures[i], ">=", 6).reify(), model.arithm(heures[i], "<=", 7).reify()));
+			}
+		}
+		
+		//Les r��f��rents sont tous au lundi matin ou au vendredi apres
+		for(i = 0; i < nbActivites; i++) {
+			if((i >= 0 && i <= 3) || (i >= 20 && i <= 23)) {
+				model.addClauses(LogOp.or(LogOp.and(model.arithm(heures[i], ">=", 0).reify(), model.arithm(heures[i], "<=", 1).reify()), 
+						LogOp.and(model.arithm(heures[i], ">=", 18).reify(), model.arithm(heures[i], "<=", 19).reify())));
+			}
+		}
+		
+		//Sym��trie entre les mati��res.
+		for(i = 0; i < nbActivites; i++) {
+			if(i == 0 || i == 1 || i == 2 || i == 8 ||i == 18 ||
+					i == 20 || i == 21 || i == 22 || i == 28 || i == 38) {
+				model.arithm(heures[i], "<", heures[i + 1]).post();
+			}
+		}
+		
+	    //solver
+		Solver solver = model.getSolver();		
+		solver.showSolutions();
+		//solver.findAllSolutions();
+		if(solver.solve()) {
+			Creneau [] creneaux = instance.theCreneaux();
+			Salle[] lesSalles = instance.theSalles();
+			Enseignant [] lesEnseignants = instance.theEnseignants();
+			CaseEdTGroupe[][] EdTGroupe = new CaseEdTGroupe[2][nbCreneaux];
+			
+			for(i = 0 ; i < nbActivites ; i++) {
+				Activite activite = instance.getActivite(i);
+				EdTGroupe[activite.getGroupe().getNumber() - 1][heures[i].getValue()] = new CaseEdTGroupe(activite,lesSalles[salles[i].getValue()], lesEnseignants[enseignants[i].getValue()]);
+				//System.out.println(activite.getMatiere() + " groupe " + activite.getGroupe() + " : " + creneaux[heures[i].getValue()] + " salle " + lesSalles[salles[i].getValue()] + " avec " + lesEnseignants[enseignants[i].getValue()]);
+			}
+			for(i = 0; i < 2 ; i++) {
+				System.out.println("Groupe " + (i + 1));
+				for(j = 0 ; j < nbCreneaux ; j++)
+					System.out.println(creneaux[j] + " : " + EdTGroupe[i][j]);
+			}
+		}
+		
+	}
+
+}

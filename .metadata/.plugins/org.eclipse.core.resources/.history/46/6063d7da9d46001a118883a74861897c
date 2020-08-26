@@ -1,0 +1,54 @@
+import org.chocosolver.solver.*;
+import org.chocosolver.solver.constraints.nary.cnf.LogOp;
+import org.chocosolver.solver.variables.*;
+import org.chocosolver.util.objects.graphs.UndirectedGraph;
+import org.chocosolver.util.objects.setDataStructures.SetType;
+
+import model.Problem;
+
+import org.chocosolver.solver.search.strategy.selectors.values.IntDomainMin;
+import org.chocosolver.solver.search.strategy.selectors.variables.FirstFail;
+import static org.chocosolver.solver.search.strategy.Search.*;
+import org.chocosolver.solver.search.strategy.assignments.DecisionOperator;
+import org.chocosolver.solver.search.strategy.selectors.values.*;
+import org.chocosolver.solver.search.strategy.selectors.variables.*;
+
+public class Solveur {
+
+	public static void main(String[] args) {
+		Probleme instance = new Probleme();
+		Model model = new Model("EdT");
+
+		int nbCreneaux = 3 ;//5 * 8;// 5 jours, 8h-12h le matin, 14h-18h l'après-midi
+		int nbEnseignements = instance.nbEnseignements();
+		IntVar [] heures = model.intVarArray("heures", nbEnseignements, 0, nbCreneaux - 1);
+		IntVar [] salles = model.intVarArray("salles", nbEnseignements, 0, instance.nbSalles() - 1);
+		
+		//Deux enseignements ne peuvent avoir lieu à la fois à la même heure et dans la même salle
+		int i, j;
+		for(i = 0; i < nbEnseignements; i++)
+			for(j = 0; j < nbEnseignements; j++)
+				if(i != j)
+					model.addClauses(LogOp.or(model.arithm(heures[i], "!=", heures[j]).reify(), model.arithm(salles[i], "!=", salles[j]).reify()));
+		
+		//Un enseignant ne peut enseigner à la même heure plusieurs enseignements
+		for(i = 0; i < nbEnseignements; i++)
+			for(j = 0; j < nbEnseignements; j++)
+				if(i != j && instance.getEnseignement(i).getEnseignant() == instance.getEnseignement(j).getEnseignant())
+					model.arithm(heures[i], "!=", heures[j]).post();
+		//Une classe ne peut suivre plusieurs enseignements à la même heure
+		for(i = 0; i < nbEnseignements; i++)
+			for(j = 0; j < nbEnseignements; j++)
+				if(i != j && instance.getEnseignement(i).getEleves() == instance.getEnseignement(j).getEleves())
+					model.arithm(heures[i], "!=", heures[j]).post();
+		
+		// Symétrie entre (toutes) les salles : les premières salles aux premiers enseignements
+		for(i = 0; i < nbEnseignements - 1; i++)
+			model.arithm(salles[i], "<=", salles[i + 1]).post();
+		//model.getSolver().setSearch(new IntStrategy(b, new FirstFail(model), new IntDomainMin()));
+		Solver solver = model.getSolver();		
+		solver.showSolutions();
+		solver.findAllSolutions();
+	}
+
+}

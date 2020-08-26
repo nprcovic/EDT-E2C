@@ -1,0 +1,39 @@
+package model;
+
+public class CaseEdTEnseignant {
+	private Activite activite;
+	private Salle salle;
+	private Groupe groupe;
+	
+	public CaseEdTEnseignant(Activite activite, Salle salle, Groupe groupe) {
+		super();
+		this.activite = activite;
+		this.salle = salle;
+		this.groupe = groupe;
+	}
+
+	public Activite getActivite() {
+		return activite;
+	}
+
+	public void setActivite(Activite activite) {
+		this.activite = activite;
+	}
+
+	public Salle getSalle() {
+		return salle;
+	}
+
+	public void setSalle(Salle salle) {
+		this.salle = salle;
+	}
+
+	public Groupe getGroupe() {
+		return groupe;
+	}
+
+	public void setGroupe(Groupe groupe) {
+		this.groupe = groupe;
+	}
+	
+}

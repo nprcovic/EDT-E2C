@@ -1,0 +1,219 @@
+public class Probleme {
+	private Enseignant[] enseignants;
+	private Salle[] salles;
+	private Creneau[] creneaux;
+	private Groupe[] groupes;
+	private Matiere[] matieres;
+	private Activite [] activites;
+	
+	public Probleme() {
+		super();
+		this.setEnseignant(theEnseignants());
+		this.setSalle(theSalles());
+		this.setCreneaux(theCreneaux());
+		this.setGroupe(theGroupes());
+		this.setMatiere(theMatieres());
+		this.setActivites(theActivites());
+	}
+	
+	public Enseignant getEnseignant(int indice) {
+		return enseignants[indice];
+	}
+	
+	public void setEnseignant(Enseignant[] enseignants) {
+		this.enseignants = enseignants;
+	}
+	
+	public int nbEnseignants() {
+		return enseignants.length;
+	}
+
+	public Salle getSalle(int indice) {
+		return salles[indice];
+	}
+
+	public void setSalle(Salle[] salles) {
+		this.salles = salles;
+	}
+	
+	public int nbSalles() {
+		return salles.length;
+	}
+
+	public Creneau[] getCreneaux() {
+		return creneaux;
+	}
+
+	public void setCreneaux(Creneau[] creneaux) {
+		this.creneaux = creneaux;
+	}
+	
+	public int nbCreneaux() {
+		return creneaux.length;
+	}
+
+	public Groupe[] getGroupe() {
+		return groupes;
+	}
+
+	public void setGroupe(Groupe[] groupes) {
+		this.groupes = groupes;
+	}
+	
+	public int nbGroupes() {
+		return groupes.length;
+	}
+
+	public Matiere[] getMatieres() {
+		return matieres;
+	}
+
+	public void setMatiere(Matiere[] matieres) {
+		this.matieres = matieres;
+	}
+	
+	public int nbMatieres() {
+		return matieres.length;
+	}
+	
+	public Activite getActivite(int indice) {
+		return activites[indice];
+	}
+
+	public void setActivites(Activite [] activites) {
+		this.activites = activites;
+	}
+	
+	public int nbActivites() {
+		return activites.length;
+	}
+	
+	public Enseignant [] theEnseignants() {
+		Enseignant [] enseignants = new Enseignant [3];
+		enseignants[0] = new Enseignant("Thierry Mathias", 'A');
+		enseignants[1] = new Enseignant("Christine Caldentey", 'A');
+		enseignants[2] = new Enseignant("Slimane Sadelli", 'A');
+		return enseignants;
+	}
+	
+	public Salle [] theSalles() {
+		Salle [] salles = new Salle [4];
+		salles[0] = new Salle('A', 513, "info", 15);
+		salles[1] = new Salle('A', 611, "cours", 15);
+		salles[2] = new Salle('I', 0, "gymnase", 500); //'I' indique que c'est pour tout le monde
+		salles[3] = new Salle('I', 1, "autre", 500);
+		return salles;
+	}
+	
+	public Creneau [] theCreneaux() {
+		Creneau [] creneaux = new Creneau [20];
+		for(Jour jour : Jour.values()) {
+			creneaux[jour.ordinal() * 4] = new Creneau(jour, 840, 1010);
+			creneaux[jour.ordinal() * 4 + 1] = new Creneau(jour, 1030, 1200);
+			creneaux[jour.ordinal() * 4 + 2] = new Creneau(jour, 1340, 1510);
+			creneaux[jour.ordinal() * 4 + 3] = new Creneau(jour, 1530, 1700);
+		}
+		return creneaux;
+	}
+	
+	public Groupe [] theGroupes() {
+		Groupe [] groupes = new Groupe [3];
+		groupes[0] = new Groupe('A', 1, 15, "generique");
+		groupes[1] = new Groupe('A', 2, 15, "generique");
+		groupes[2] = new Groupe('A', 3, 15, "generique");
+		return groupes;
+	}
+	
+	public Matiere [] theMatieres() {
+		Matiere [] matieres = new Matiere [26];
+		matieres[0] = new Matiere("Temps referent", "coursEtInfo", 0);
+		//matieres[1] = new Matiere("Projet pedagogique", "coursEtExterieur", 0);
+		matieres[2] = new Matiere("EDA francais", "info", 0);
+		matieres[3] = new Matiere("EDA francais - micro e/se", "info", 0);
+		matieres[4] = new Matiere("Remediation francais", "cours", 0);
+		matieres[5] = new Matiere("Francais", "cours", 0);
+		matieres[6] = new Matiere("Atelier lecture/ecriture", "cours", 0);
+		matieres[7] = new Matiere("EDA maths", "info", 0);
+		//matieres[8] = new Matiere("EDA maths - micro e/se", "info", 0);
+		matieres[9] = new Matiere("Remediation math", "cours", 0);
+		matieres[10] = new Matiere("Mathematique", "cours", 0);
+		matieres[11] = new Matiere("ARL", "cours", 0);
+		matieres[12] = new Matiere("EDA bureautique", "info", 0);
+		//matieres[13] = new Matiere("EDA bureautique - micro e/se", "info", 0);
+		matieres[14] = new Matiere("Remedition bureautique", "cours", 0);
+		//matieres[15] = new Matiere("Bureautique", "info", 0);
+		matieres[16] = new Matiere("Anglais", "cours", 0);
+		matieres[17] = new Matiere("Sport", "sport", 0);
+		matieres[18] = new Matiere("Demarches exterieures", "autre", 0);
+		//matieres[19] = new Matiere("Null", "null", 0);
+		matieres[20] = new Matiere("Temps referent", "coursEtInfo", 1);
+		matieres[21] = new Matiere("Temps referent", "coursEtInfo", 2);
+		matieres[22] = new Matiere("Temps referent", "coursEtInfo", 3);
+		//matieres[23] = new Matiere("Projet pedagogique", "coursEtExterieur", 1);
+		matieres[24] = new Matiere("Sport", "sport", 1);
+		matieres[25] = new Matiere("Demarches exterieures", "autre", 1);
+		
+		return matieres;
+	}
+	
+	public Activite [] theActivites() {
+		Activite [] activites = new Activite [40];
+		activites[0] = new Activite(groupes[0], matieres[0]);//referent
+		activites[1] = new Activite(groupes[0], matieres[20]);
+		activites[2] = new Activite(groupes[0], matieres[21]);
+		activites[3] = new Activite(groupes[0], matieres[22]);
+		activites[4] = new Activite(groupes[0], matieres[2]);//EDA
+		activites[5] = new Activite(groupes[0], matieres[3]);
+		activites[6] = new Activite(groupes[0], matieres[7]);
+		activites[7] = new Activite(groupes[0], matieres[12]);
+		activites[8] = new Activite(groupes[0], matieres[18]);//demarche ext
+		activites[9] = new Activite(groupes[0], matieres[25]);
+		
+		activites[10] = new Activite(groupes[0], matieres[4]);//francais
+		activites[11] = new Activite(groupes[0], matieres[5]);
+		activites[12] = new Activite(groupes[0], matieres[6]);
+		
+		activites[13] = new Activite(groupes[0], matieres[9]);//maths
+		activites[14] = new Activite(groupes[0], matieres[10]);
+		
+		activites[15] = new Activite(groupes[0], matieres[11]);//ARL
+		
+		activites[16] = new Activite(groupes[0], matieres[14]);//bureautique
+		
+		activites[17] = new Activite(groupes[0], matieres[16]);//anglais
+		
+		activites[18] = new Activite(groupes[0], matieres[17]);//sport
+		activites[19] = new Activite(groupes[0], matieres[24]);
+		
+		activites[20] = new Activite(groupes[1], matieres[0]);//referent
+		activites[21] = new Activite(groupes[1], matieres[20]);
+		activites[22] = new Activite(groupes[1], matieres[21]);
+		activites[23] = new Activite(groupes[1], matieres[22]);
+		activites[24] = new Activite(groupes[1], matieres[2]);//EDA
+		activites[25] = new Activite(groupes[1], matieres[3]);
+		activites[26] = new Activite(groupes[1], matieres[7]);
+		activites[27] = new Activite(groupes[1], matieres[12]);
+		activites[28] = new Activite(groupes[1], matieres[18]);//demarche ext
+		activites[29] = new Activite(groupes[1], matieres[25]);
+		
+		activites[30] = new Activite(groupes[1], matieres[4]);//francais
+		activites[31] = new Activite(groupes[1], matieres[5]);
+		activites[32] = new Activite(groupes[1], matieres[6]);
+
+		activites[33] = new Activite(groupes[1], matieres[9]);//maths
+		activites[34] = new Activite(groupes[1], matieres[10]);
+		
+		activites[35] = new Activite(groupes[1], matieres[11]);//ARL
+		
+		activites[36] = new Activite(groupes[1], matieres[14]);//bureautique
+		
+		activites[37] = new Activite(groupes[1], matieres[16]);//anglais
+		
+		activites[38] = new Activite(groupes[1], matieres[17]);//sport
+		activites[39] = new Activite(groupes[1], matieres[24]);
+		
+		
+		
+		return activites;
+	}
+}
